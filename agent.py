@@ -35,8 +35,8 @@ class Agent():
             )
         
         self.memory_state = np.zeros((self.max_memory_size, *input_dims), dtype=np.float32)
-        # self.new_memory_state = np.zeros((self.memory_state, *input_dims), dtype=np.float32)
-        self.new_memory_state = np.zeros((self.memory_state.shape[0], *input_dims), dtype=np.float32)
+        self.new_memory_state = np.zeros((self.max_memory_size, *input_dims), dtype=np.float32)
+       # self.new_memory_state = np.zeros((self.memory_state.shape[0], *input_dims), dtype=np.float32)
 
         self.memory_action = np.zeros(self.max_memory_size, dtype=np.int32)
         self.memory_reward = np.zeros(self.max_memory_size, dtype=np.float32)
@@ -50,7 +50,7 @@ class Agent():
             state_,
             done
     ):
-        index = self.mem_cntr %  self.max_memory_size
+        index = self.mem_cntr %  self.max_memory_size   
         self.memory_state[index] = state
         self.new_memory_state[index] = state_
         self.memory_reward[index] = reward

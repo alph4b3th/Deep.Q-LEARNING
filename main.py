@@ -1,4 +1,5 @@
 import gymnasium as gym
+
 import numpy as np
 from agent import Agent
 from neural import DeepQNetwork
@@ -19,9 +20,9 @@ if __name__ == "__main__":
 
         while not done:
             action = agent.choose_action(observation)
-            observation_, reward, done, info, _ =  env.step(action)
+            observation_, reward, done, _, info = env.step(action)
             score += reward
-            agent.store_transaction(observation, action, reward, observation_)
+            agent.store_transaction(observation, action, reward, observation_, done)
             agent.learn()
             observation=observation_
         
@@ -30,6 +31,3 @@ if __name__ == "__main__":
         avg_scores = np.mean(scores[-100:])
 
         print(f"epsiode: {eps}, score: {score}%.2f, avg score: {avg_scores}%.2f, epslion: {agent.epsilon}")
-
- 
-
