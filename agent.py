@@ -25,7 +25,7 @@ class Agent():
         self.eps_end = eps_end
         self.eps_decay = eps_decay
 
-        self.action_space = [B for in range(n_actions)]
+        self.action_space = [B for B in range(n_actions)]
         self.mem_cntr = 0 
         self.Q_eval = DeepQNetwork(
             self.lr, 
@@ -42,5 +42,62 @@ class Agent():
         self.memory_action = np.zeros(self.max_memory_size, dtype=np.int32)
         self.memory_reward = np.zeros(self.max_memory_size, dtype=np.float32)
         self.memory_terminal = np.zeros(self.max_memory_size, dtype=np.bool)
+
+    def store_transaction(
+            self,
+            state,
+            action,
+            reward,
+            state_,
+            done
+    ):
+        index = self.mem_cntr %  self.max_memory_size
+        self.memory_state[index] = state
+        self.new_memory_state[index] = state_
+        self.memory_reward[index] = reward
+        self.memory_action[index] = action
+        self.memory_terminal[index] = done
+
+        self.mem_cntr+=1
+
+    def choose_action(self, observation ):
+        if np.random.random() < self.epsilon:
+            state = torch.tensor([observation]).to(self.Q_eval.device)
+            action = self.Q_eval.forward(state)
+            action = torch.argmax(action).item()
+            return action
+        
+        action = np.random.choice(self.action_space)
+        return action
+    
+    def learn(self):
+        if self.mem_cntr < self.batch_size:
+            return
+        
+        self.Q_eval.zero_grad()
+        mem_max = min(self.mem_cntr, self.max_memory_size)
+        batch = np.random.choice(mem_max, self.batch_size)
+        batch_idx = np.arange(self.batch_size, dtype=np.float32)
+        batch_state = torch.tensor(self.memory_state[batch]).to(self.Q_eval.device)
+        batch_new_state = torch.tensor(self.new_memory_state[batch]).to(self.Q_eval.device)
+        batch_reward = torch.tensor(self.memory_reward[batch]).to(self.Q_eval.device)
+        batch_terminal = torch.tensor(self.memory_terminal[batch]).to(self.Q_eval.device)
+
+        batch_action = self.memory_action[batch]
+
+        q_eval = self.Q_eval.forward(batch_state)[batch_idx, batch_action]
+        q_next = self.Q_eval.forward(batch_new_state)
+        q_next[batch_terminal] = 0.0
+
+        q_target = batch_reward + self.gamma * torch.max(q_next, dims=1)[0]
+
+        loss = self.Q_eval.loss_fn(q_target, q_eval).to(self.Q_eval.device)
+        loss.backward()
+        self.Q_eval.optimizer.step()
+
+        self.epsilon -= self.eps_decay if self.epsilon > self.eps_end \
+                                       else self.eps_end
+
+
 
         
