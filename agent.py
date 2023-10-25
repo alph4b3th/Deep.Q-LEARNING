@@ -35,13 +35,12 @@ class Agent():
             )
         
         self.memory_state = np.zeros((self.max_memory_size, *input_dims), dtype=np.float32)
-        self.new_memory_state = np.zeros(
-            (self.memory_state, *input_dims), 
-            dtype=np.float32)
+        # self.new_memory_state = np.zeros((self.memory_state, *input_dims), dtype=np.float32)
+        self.new_memory_state = np.zeros((self.memory_state.shape[0], *input_dims), dtype=np.float32)
 
         self.memory_action = np.zeros(self.max_memory_size, dtype=np.int32)
         self.memory_reward = np.zeros(self.max_memory_size, dtype=np.float32)
-        self.memory_terminal = np.zeros(self.max_memory_size, dtype=np.bool)
+        self.memory_terminal = np.zeros(self.max_memory_size, dtype=np.bool_)
 
     def store_transaction(
             self,
@@ -62,7 +61,7 @@ class Agent():
 
     def choose_action(self, observation ):
         if np.random.random() < self.epsilon:
-            state = torch.tensor([observation]).to(self.Q_eval.device)
+            state = torch.tensor([observation])#.to(self.Q_eval.device)
             action = self.Q_eval.forward(state)
             action = torch.argmax(action).item()
             return action
