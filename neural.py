@@ -14,13 +14,14 @@ class DeepQNetwork(torch.nn.Module):
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=lr)
         self.loss_fn = torch.nn.MSELoss()
+        self.activation = torch.nn.ReLU()
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else 'cpu') 
         self.to(self.device)
 
     def forward(self, state):
-        x = torch.nn.ReLU(self.fc1_dims(state))
-        x = torch.nn.ReLU(self.fc2_dims(x))
-        actions = torch.nn.ReLU(self.fc3_dims(x))
+        x = self.activation(self.fc1(state))
+        x = self.activation(self.fc2(x))
+        actions = self.fc3(x)
         return actions
 

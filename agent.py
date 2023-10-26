@@ -50,6 +50,8 @@ class Agent():
             state_,
             done
     ):
+      
+
         index = self.mem_cntr %  self.max_memory_size   
         self.memory_state[index] = state
         self.new_memory_state[index] = state_
@@ -73,10 +75,13 @@ class Agent():
         if self.mem_cntr < self.batch_size:
             return
         
-        self.Q_eval.zero_grad()
+        self.Q_eval.optimizer.zero_grad()
+        
         mem_max = min(self.mem_cntr, self.max_memory_size)
-        batch = np.random.choice(mem_max, self.batch_size)
-        batch_idx = np.arange(self.batch_size, dtype=np.float32)
+        batch = np.random.choice(mem_max, self.batch_size, replace=False)
+
+        batch_idx = np.arange(self.batch_size, dtype=np.int32   )
+
         batch_state = torch.tensor(self.memory_state[batch]).to(self.Q_eval.device)
         batch_new_state = torch.tensor(self.new_memory_state[batch]).to(self.Q_eval.device)
         batch_reward = torch.tensor(self.memory_reward[batch]).to(self.Q_eval.device)
