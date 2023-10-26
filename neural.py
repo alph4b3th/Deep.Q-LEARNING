@@ -19,6 +19,12 @@ class DeepQNetwork(torch.nn.Module):
         self.device = torch.device("cuda" if torch.cuda.is_available() else 'cpu') 
         self.to(self.device)
 
+        try:
+            torch.load("deep-q.pth")
+            print("model is loaded with sucefull")
+        except:
+            print("fail to load model. Model weights exits ?")
+
     def forward(self, state):
         x = self.activation(self.fc1(state))
         x = self.activation(self.fc2(x))

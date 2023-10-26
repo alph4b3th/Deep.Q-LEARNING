@@ -18,6 +18,7 @@ class Agent():
         self.gamma = gamma
         self.epsilon = epsilon
         self.lr = lr
+        self.last_loss = float('inf')
         self.input_dims = input_dims
         self.batch_size = batch_size
         self.n_actions = n_actions
@@ -97,11 +98,17 @@ class Agent():
 
         loss = self.Q_eval.loss_fn(q_target, q_eval).to(self.Q_eval.device)
         loss.backward()
+      
         self.Q_eval.optimizer.step()
 
         self.epsilon -= self.eps_decay if self.epsilon > self.eps_end \
                                        else self.eps_end
+        
+        if loss < self.last_loss:
+            self.last_loss = loss
+            torch.save(q_eval, "deep-q.pth")
 
+        
 
 
         

@@ -5,7 +5,7 @@ from agent import Agent
 from neural import DeepQNetwork
 
 if __name__ == "__main__":
-    env = gym.make("LunarLander-v2")
+    env = gym.make("LunarLander-v2", render_mode="human")
     agent = Agent(gamma=0.99, epsilon=1.0, batch_size=64, n_actions=4,
                   eps_end=1e-2, 
                   input_dims=[8], lr=3e-3)
@@ -25,6 +25,7 @@ if __name__ == "__main__":
             agent.store_transaction(observation, action, reward, observation_, done)
             agent.learn()
             observation=observation_
+            
         
         scores.append(score)
         eps_history.append(agent.epsilon)
