@@ -10,7 +10,7 @@ class Agent():
                  input_dims,
                  batch_size, 
                  n_actions,
-                 max_memory_size=100_000, 
+                 max_memory_size=700_000, 
                  eps_end = 0.01,
                  eps_decay = 5e-4
              ):
@@ -32,7 +32,7 @@ class Agent():
             self.lr, 
             n_actions=n_actions, 
             inputs_dims=input_dims,
-            fc1_dims=256, fc2_dims= 256
+            fc1_dims=320, fc2_dims= 320
             )
         
         self.memory_state = np.zeros((self.max_memory_size, *input_dims), dtype=np.float32)
@@ -101,7 +101,7 @@ class Agent():
       
         self.Q_eval.optimizer.step()
 
-        self.epsilon -= self.eps_decay if self.epsilon > self.eps_end \
+        self.epsilon =  self.epsilon - self.eps_decay if self.epsilon > self.eps_end \
                                        else self.eps_end
         
         if loss < self.last_loss:
