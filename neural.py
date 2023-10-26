@@ -8,13 +8,19 @@ class DeepQNetwork(torch.nn.Module):
         self.fc2_dims = fc2_dims
         self.n_actions = n_actions
 
-        self.fc1 = torch.nn.Linear(*self.inputs_dims, self.fc1_dims)
-        self.fc2 = torch.nn.Linear(self.fc1_dims, self.fc2_dims)
-        self.fc3 = torch.nn.Linear(self.fc2_dims, n_actions)
+        self.activation = torch.nn.ReLU()
+        self.network = torch.nn.Sequential(
+             self.activation,
+             torch.nn.Linear(*self.inputs_dims, self.fc1_dims),
+             self.activation,
+             torch.nn.Linear(self.fc1_dims, self.fc2_dims),
+             self.activation,
+             torch.nn.Linear(self.fc2_dims, n_actions)
+        )
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=lr)
         self.loss_fn = torch.nn.MSELoss()
-        self.activation = torch.nn.ReLU()
+        
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else 'cpu') 
         self.to(self.device)
@@ -26,8 +32,6 @@ class DeepQNetwork(torch.nn.Module):
             print("fail to load model. Model weights exits ?")
 
     def forward(self, state):
-        x = self.activation(self.fc1(state))
-        x = self.activation(self.fc2(x))
-        actions = self.fc3(x)
+        actions = self.network(state)
         return actions
 
