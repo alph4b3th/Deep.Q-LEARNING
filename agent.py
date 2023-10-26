@@ -93,7 +93,7 @@ class Agent():
         q_next = self.Q_eval.forward(batch_new_state)
         q_next[batch_terminal] = 0.0
 
-        q_target = batch_reward + self.gamma * torch.max(q_next, dims=1)[0]
+        q_target = batch_reward + self.gamma * torch.max(q_next, dim=1)[0]
 
         loss = self.Q_eval.loss_fn(q_target, q_eval).to(self.Q_eval.device)
         loss.backward()
