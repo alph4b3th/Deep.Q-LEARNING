@@ -11,12 +11,12 @@ if __name__ == "__main__":
                   input_dims=[8], lr=3e-3)
     
     scores, eps_history = [], []
-    n_games = 50
+    n_games = 500
 
     for eps in range (n_games):
         score = 0
         done = False
-        observation = env.reset()
+        observation, _ = env.reset()
 
         while not done:
             action = agent.choose_action(observation)
