@@ -18,7 +18,7 @@ class DeepQNetwork(torch.nn.Module):
              torch.nn.Linear(128, n_actions)
         )
 
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=lr, foreach=True)
+        self.optimizer = torch.optim.Adam(self.parameters(), lr=lr)
         self.loss_fn = torch.nn.MSELoss()
         
 
