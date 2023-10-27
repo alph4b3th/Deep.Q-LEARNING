@@ -12,7 +12,7 @@ class Agent():
                  n_actions,
                  max_memory_size=100_000, 
                  eps_end = 0.01,
-                 eps_decay = 1e-8
+                 eps_decay = 1e-4
              ):
         
         self.gamma = gamma
