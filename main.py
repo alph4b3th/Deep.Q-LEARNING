@@ -18,27 +18,22 @@ if __name__ == "__main__":
         score = 0
         done = False
         observation, _ = env.reset()
-        fuel = 0
+        cycles = 0
 
         while not done:
-            if fuel > n_max_cycles:
+            if cycles > n_max_cycles:
                 break
-            fuel += 1
-            print(f"fuel: {fuel}")
+            cycles += 1
             action = agent.choose_action(observation)
             observation_, reward, done, _, info = env.step(action)
             score += reward
             agent.store_transaction(observation, action, reward, observation_, done)
             agent.learn()
             observation=observation_
-           
-          
-              
-
         
         scores.append(score)
         eps_history.append(agent.epsilon)
         avg_scores = np.mean(scores[-100:])
 
-        print(f"episode: {eps}, score: {score:.2f}, avg score: {avg_scores:.2f}, epsilon: {agent.epsilon}")
+        print(f"episode: {eps}, score: {score:.2f}, avg score: {avg_scores:.2f}, epsilon: {agent.epsilon}, cycles: {cycles}")
 
