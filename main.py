@@ -5,18 +5,18 @@ from neural import DeepQNetwork
 from gymnasium.wrappers import  RecordVideo
 
 def trigger_episode(episode_id):
-    return episode_id % 2 == 0  # Grava a cada 100 episódios
+    return episode_id % 50 == 0 
 
 if __name__ == "__main__":
-    env = gym.make("LunarLander-v2", render_mode="rgb_array", max_episode_steps=128 )
+    env = gym.make("LunarLander-v2", render_mode="rgb_array", max_episode_steps=8000)
     agent = Agent(gamma=0.99, epsilon=1.0, batch_size=64, n_actions=4,
                   eps_end=1e-2, 
                   input_dims=[8], lr=1e-4)
     
-    env = RecordVideo(env=env, episode_trigger= trigger_episode, video_folder="Z:\iatreinando\LunarLander-v2")
+    env = RecordVideo(env=env, episode_trigger= trigger_episode, video_folder="Z:\iatreinando\LunarLander-v2-continue")
    
     scores, eps_history = [], []
-    n_games = 25000
+    n_games = 100_000
 
 
     for eps in range (n_games):

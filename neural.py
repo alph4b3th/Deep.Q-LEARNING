@@ -9,17 +9,13 @@ class DeepQNetwork(torch.nn.Module):
         self.activation = torch.nn.ReLU()
         self.network = torch.nn.Sequential(
              self.activation,
-             torch.nn.Linear(*self.inputs_dims, 328),
+             torch.nn.Linear(*self.inputs_dims, 128),
              self.activation,
-             torch.nn.Linear(328, 328),
+             torch.nn.Linear(128, 128),
              self.activation,
-             torch.nn.Linear(328, 328),
+             torch.nn.Linear(128, 128),
              self.activation,
-             torch.nn.Linear(328, 328),
-             self.activation,
-             torch.nn.Linear(328, 328),
-             self.activation,
-             torch.nn.Linear(328, n_actions)
+             torch.nn.Linear(128, n_actions)
         )
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=lr, foreach=True)
