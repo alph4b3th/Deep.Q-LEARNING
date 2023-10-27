@@ -10,9 +10,9 @@ class Agent():
                  input_dims,
                  batch_size, 
                  n_actions,
-                 max_memory_size=700_000, 
+                 max_memory_size=100_000, 
                  eps_end = 0.01,
-                 eps_decay = 5e-4
+                 eps_decay = 1e-8
              ):
         
         self.gamma = gamma
