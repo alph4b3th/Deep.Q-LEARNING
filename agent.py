@@ -31,8 +31,7 @@ class Agent():
         self.Q_eval = DeepQNetwork(
             self.lr, 
             n_actions=n_actions, 
-            inputs_dims=input_dims,
-            fc1_dims=320, fc2_dims= 320
+            inputs_dims=input_dims
             )
         
         self.memory_state = np.zeros((self.max_memory_size, *input_dims), dtype=np.float32)
