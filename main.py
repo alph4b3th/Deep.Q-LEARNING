@@ -1,5 +1,4 @@
 import gymnasium as gym
-
 import numpy as np
 from agent import Agent
 from neural import DeepQNetwork
@@ -16,9 +15,9 @@ if __name__ == "__main__":
 
     for eps in range (n_games):
         score = 0
+        cycles = 0
         done = False
         observation, _ = env.reset()
-        cycles = 0
 
         while not done:
             if cycles > n_max_cycles:

@@ -8,12 +8,12 @@ class DeepQNetwork(torch.nn.Module):
         self.fc2_dims = fc2_dims
         self.n_actions = n_actions
 
-        self.activation = torch.nn.Tanh()
+        self.activation = torch.nn.ReLU()
         self.network = torch.nn.Sequential(
              self.activation,
              torch.nn.Linear(*self.inputs_dims, self.fc1_dims),
              self.activation,
-              torch.nn.Linear(self.fc1_dims, self.fc2_dims),
+             torch.nn.Linear(self.fc1_dims, self.fc2_dims),
              self.activation,
              torch.nn.Linear(self.fc2_dims, n_actions)
         )
