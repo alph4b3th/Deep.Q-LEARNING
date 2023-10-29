@@ -97,7 +97,6 @@ class Agent():
 
         loss = self.Q_eval.loss_fn(q_target, q_eval).to(self.Q_eval.device)
         loss.backward()
-      
         self.Q_eval.optimizer.step()
 
         self.epsilon =  self.epsilon - self.eps_decay if self.epsilon > self.eps_end \

@@ -5,7 +5,7 @@ from neural import DeepQNetwork
 from gymnasium.wrappers import  RecordVideo
 
 def trigger_episode(episode_id):
-    return episode_id % 50 == 0 
+    return episode_id % 2 == 0 
 
 if __name__ == "__main__":
     env = gym.make("LunarLander-v2",
@@ -22,9 +22,12 @@ if __name__ == "__main__":
                   n_actions=4,
                   eps_end=1e-2, 
                   input_dims=[8],
-                  lr=3e-2)
+                  lr=1e-3)
     
-    env = RecordVideo(env=env, episode_trigger= trigger_episode, video_folder="Z:\iatreinando\LunarLander-v2")
+    env = RecordVideo(env=env, 
+                      episode_trigger=trigger_episode, 
+                      video_folder="Z:\iatreinando\LunarLander-v2"
+                     )
    
     scores, eps_history = [], []
     n_games = 100_000
@@ -41,7 +44,6 @@ if __name__ == "__main__":
          
             action = agent.choose_action(observation)
             observation_, reward, done, truncated, info = env.step(action)
-           
             if truncated or done:
                 break
 
