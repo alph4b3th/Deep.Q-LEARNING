@@ -8,12 +8,23 @@ def trigger_episode(episode_id):
     return episode_id % 50 == 0 
 
 if __name__ == "__main__":
-    env = gym.make("LunarLander-v2", render_mode="rgb_array", max_episode_steps=8000)
-    agent = Agent(gamma=0.99, epsilon=1.0, batch_size=64, n_actions=4,
-                  eps_end=1e-2, 
-                  input_dims=[8], lr=3e-2)
+    env = gym.make("LunarLander-v2",
+                    render_mode="rgb_array",
+                    max_episode_steps=100,
+                    gravity = -1.0,
+                    wind_power= 28.0,
+                    turbulence_power = 6.5,
+                  )
     
-    env = RecordVideo(env=env, episode_trigger= trigger_episode, video_folder="Z:\iatreinando\LunarLander-v2-continue")
+    agent = Agent(gamma=0.80, 
+                  epsilon=1.0,
+                  batch_size=100,
+                  n_actions=4,
+                  eps_end=1e-2, 
+                  input_dims=[8],
+                  lr=3e-2)
+    
+    env = RecordVideo(env=env, episode_trigger= trigger_episode, video_folder="Z:\iatreinando\LunarLander-v2")
    
     scores, eps_history = [], []
     n_games = 100_000
