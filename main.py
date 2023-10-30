@@ -9,7 +9,7 @@ def trigger_episode(episode_id):
 
 if __name__ == "__main__":
     env = gym.make("LunarLander-v2",
-                    render_mode="human",
+                    render_mode="rgb_array",
                     max_episode_steps=500,
                     gravity = -11,
                     wind_power= 20.0,
@@ -25,10 +25,10 @@ if __name__ == "__main__":
                   lr=1e-3,
                   max_memory_size=50_000)
     
-    # env = RecordVideo(env=env, 
-    #                   episode_trigger=trigger_episode, 
-    #                   video_folder="Z:\iatreinando\LunarLander-v2-pt3"
-    #                  )
+    env = RecordVideo(env=env, 
+                      episode_trigger=trigger_episode, 
+                      video_folder="Z:\iatreinando\LunarLander-v2-pt3"
+                     )
    
     scores, eps_history = [], []
     n_games = 100_000
