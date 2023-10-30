@@ -17,10 +17,10 @@ if __name__ == "__main__":
                   )
     
     agent = Agent(gamma=0.60, 
-                  epsilon=8e-2,
+                  epsilon=2.4e-1,
                   batch_size=64,
                   n_actions=4,
-                  eps_end=8e-2, 
+                  eps_end=2.4e-1, 
                   input_dims=[8],
                   lr=1e-3,
                   max_memory_size=2_000_000)
