@@ -16,22 +16,22 @@ if __name__ == "__main__":
                     turbulence_power = 2.0,
                   )
     
-    agent = Agent(gamma=0.80, 
+    agent = Agent(gamma=0.60, 
                   epsilon=8e-2,
                   batch_size=64,
                   n_actions=4,
                   eps_end=8e-2, 
                   input_dims=[8],
                   lr=1e-3,
-                  max_memory_size=50_000)
+                  max_memory_size=2_000_000)
     
     env = RecordVideo(env=env, 
                       episode_trigger=trigger_episode, 
-                      video_folder="Z:\iatreinando\LunarLander-v2-pt"
+                      video_folder="Z:\iatreinando\LunarLander-v2-pt-2"
                      )
    
     scores, eps_history = [], []
-    n_games = 100_000
+    n_games = 16000
 
 
     for eps in range (n_games):

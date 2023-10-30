@@ -1,6 +1,6 @@
 # :sparkles: Deep.Q-LEARNING
 Este é um dos meus projetos pessoais de inteligência artificial, uma rede neural profunda para aprender a efetuar decisões corretas para pousar um foguete na lua. 
-Definitavemente esse é um dos projetos de IA mais complexos que eu já brinquei, sendo muito mais sofisticado que meu ultimo projeto de RL, 
+Definitivamente esse é um dos projetos de IA mais complexos que eu já brinquei, sendo muito mais sofisticado que meu ultimo projeto de RL, 
 [Godot-AI](https://www.youtube.com/watch?v=29HReOtTa6M).
 
 ## 🧠 Sobre mim
