@@ -17,7 +17,7 @@ if __name__ == "__main__":
                   )
     
     agent = Agent(gamma=0.60, 
-                  epsilon=8e-2,
+                  epsilon=2.4e-1,
                   batch_size=64,
                   n_actions=4,
                   eps_end=8e-2, 
