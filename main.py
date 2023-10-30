@@ -26,7 +26,7 @@ if __name__ == "__main__":
     
     env = RecordVideo(env=env, 
                       episode_trigger=trigger_episode, 
-                      video_folder="Z:\iatreinando\LunarLander-v2"
+                      video_folder="Z:\iatreinando\LunarLander-v2-pt2"
                      )
    
     scores, eps_history = [], []
