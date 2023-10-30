@@ -22,3 +22,7 @@ Definitavemente esse é um dos projetos de IA mais complexos que eu já brinquei
    estabilizar a nave no ar, menos o que o simulador quer: POUSAR A NAVE! Isso é estranho, muito estranho, eu não sei se o modelo está aprendendo ou fazendo ações aleatórias
    que parecem fazer algum sentido, ou um pouco dos dois. Ao menos é engraçado observar esse comportamento esquisito, e lá vou eu investigar o que está acontecendo. Enfim, espero
    que você leitor, goste do meu projeto :)
+
+https://github.com/alph4b3th/Deep.Q-LEARNING/assets/66482679/ea228c0f-b8ee-4781-ad44-317940f7a179
+
+
