@@ -20,14 +20,14 @@ if __name__ == "__main__":
                   epsilon=2.4e-1,
                   batch_size=64,
                   n_actions=4,
-                  eps_end=2.4e-1, 
+                  eps_end=1e-4, 
                   input_dims=[8],
                   lr=1e-3,
                   max_memory_size=2_000_000)
     
     env = RecordVideo(env=env, 
                       episode_trigger=trigger_episode, 
-                      video_folder="Z:\iatreinando\LunarLander-v2-pt-2"
+                      video_folder="Z:\iatreinando\LunarLander-v2-pt-6"
                      )
    
     scores, eps_history = [], []
