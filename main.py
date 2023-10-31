@@ -23,7 +23,7 @@ if __name__ == "__main__":
                   eps_end=1e-4, 
                   input_dims=[8],
                   lr=1e-3,
-                  max_memory_size=2_000_000)
+                  max_memory_size=100_000)
     
     env = RecordVideo(env=env, 
                       episode_trigger=trigger_episode, 
