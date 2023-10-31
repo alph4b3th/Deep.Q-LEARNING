@@ -8,14 +8,17 @@ class DeepQNetwork(torch.nn.Module):
 
         self.activation = torch.nn.ReLU()
         self.network = torch.nn.Sequential(
+             self.activation,
              torch.nn.Linear(*self.inputs_dims, 500),
-             torch.nn.Dropout(0.5),
+             torch.nn.Dropout(0.2),
              self.activation,
              torch.nn.Linear(500, 512),
-             torch.nn.Dropout(0.5),
+             torch.nn.Dropout(0.2),
              self.activation,
              torch.nn.Linear(512, 256),
-             torch.nn.Dropout(0.5),
+             torch.nn.Dropout(0.2),
+             self.activation,
+             torch.nn.Linear(512, 256),
              self.activation,
              torch.nn.Linear(256, n_actions)
         )
