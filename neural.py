@@ -18,7 +18,7 @@ class DeepQNetwork(torch.nn.Module):
              torch.nn.Linear(512, 256),
              torch.nn.Dropout(0.2),
              self.activation,
-             torch.nn.Linear(512, 256),
+             torch.nn.Linear(256, 256),
              self.activation,
              torch.nn.Linear(256, n_actions)
         )
