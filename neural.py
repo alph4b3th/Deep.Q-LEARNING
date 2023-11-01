@@ -9,20 +9,15 @@ class DeepQNetwork(torch.nn.Module):
         self.activation = torch.nn.ReLU()
         self.network = torch.nn.Sequential(
              self.activation,
-             torch.nn.Linear(self.observations, 500),
-             torch.nn.Dropout(0.2),
+             torch.nn.Linear(self.observations, 128),
              self.activation,
-             torch.nn.Linear(500, 512),
-             torch.nn.Dropout(0.2),
+             torch.nn.Linear(128, 128),
              self.activation,
-             torch.nn.Linear(512, 256),
-             torch.nn.Dropout(0.2),
-             self.activation,
-             torch.nn.Linear(256, 256),
-             self.activation,
-             torch.nn.Linear(256, n_actions)
+             torch.nn.Linear(128, n_actions)
         )
 
+            
+            
         self.device = torch.device("cuda" if torch.cuda.is_available() else 'cpu') 
         self.to(self.device)
    
