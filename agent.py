@@ -1,46 +1,59 @@
 import torch
+import math
 import numpy as np
 from neural import DeepQNetwork
+from memory import ReplayMemory, Transition
 
 class Agent():
     def __init__(self,
-                 gamma, 
-                 epsilon,
-                 lr, 
-                 input_dims,
-                 batch_size, 
+                 observations,
                  n_actions,
-                 max_memory_size=100_000, 
-                 eps_end = 0.01,
-                 eps_decay = 1e-4
+                 MEMORY_SIZE=10000,
+                 BATCH_SIZE = 128,
+                 GAMMA = 0.99,
+                 EPS_START = 0.9,
+                 EPS_END = 5e-2,
+                 EPS_DECAY = 1000,
+                 TAU = 5e-3,
+                 LR = 1e-4,
              ):
         
-        self.gamma = gamma
-        self.epsilon = epsilon
-        self.lr = lr
-        self.last_loss = float('inf')
-        self.input_dims = input_dims
-        self.batch_size = batch_size
-        self.n_actions = n_actions
-        self.max_memory_size = max_memory_size
-        self.eps_end = eps_end
-        self.eps_decay = eps_decay
-
-        self.action_space = [B for B in range(n_actions)]
-        self.mem_cntr = 0 
-        self.Q_eval = DeepQNetwork(
-            self.lr, 
-            n_actions=n_actions, 
-            inputs_dims=input_dims
-            )
+        self.batch_size = BATCH_SIZE
+        self.gamma = GAMMA
+        self.eps_start = EPS_START
+        self.eps_end = EPS_END
+        self.eps_decay = EPS_DECAY
+        self.epsilon = 0
+        self.steps_done = 0
+        self.tau = TAU
+        self.lr =LR
         
-        self.memory_state = np.zeros((self.max_memory_size, *input_dims), dtype=np.float32)
-        self.new_memory_state = np.zeros((self.max_memory_size, *input_dims), dtype=np.float32)
-       # self.new_memory_state = np.zeros((self.memory_state.shape[0], *input_dims), dtype=np.float32)
+        self.last_loss = float('inf')
 
-        self.memory_action = np.zeros(self.max_memory_size, dtype=np.int32)
-        self.memory_reward = np.zeros(self.max_memory_size, dtype=np.float32)
-        self.memory_terminal = np.zeros(self.max_memory_size, dtype=np.bool_)
+        self.policy_net = DeepQNetwork(observations,  n_actions)
+        self.target_net = DeepQNetwork(observations,  n_actions)
+        self.target_net.load_state_dict(self.policy_net.state_dict())
+
+        self.memory = ReplayMemory(MEMORY_SIZE)
+        
+        self.optimizer = \
+            torch.optim.\
+            AdamW(self.policy_net.parameters(), lr=LR, amsgrad=True)
+        
+        self.load_model()
+        
+
+    def load_model(self):
+        try:
+            self.policy_net = torch.load("policy.pth")
+            print("model is loaded with sucefull")
+        except:
+            print("fail to load model. Model weights exits ?")
+
+    def save_model(self):
+        torch.save(self.policy_net, "policy.pth")
+        torch.save(self.target_net, "target.pth")
+         
 
     def store_transaction(
             self,
@@ -50,8 +63,6 @@ class Agent():
             state_,
             done
     ):
-      
-
         index = self.mem_cntr %  self.max_memory_size   
         self.memory_state[index] = state
         self.new_memory_state[index] = state_
@@ -61,50 +72,66 @@ class Agent():
 
         self.mem_cntr+=1
 
-    def choose_action(self, observation ):
+    def decay_eps(self):
+        self.epsilon = self.eps_end + (self.eps_start -\
+                                   self.eps_end)  *\
+        math.exp(-1. * self.steps_done / self.eps_decay)
+        self.steps_done +=1
+
+    def choose_action(self, state, env):
         if np.random.random() > self.epsilon:
-            state = torch.tensor([observation]).to(self.Q_eval.device)
-            action = self.Q_eval.forward(state)
-            action = torch.argmax(action).item()
-            return action
+            with torch.no_grad():
+                return self.policy_net(state).max(1)[1].view(1, 1)
         
-        action = np.random.choice(self.action_space)
+        action = torch.tensor(
+                    [[env.action_space.sample()]],
+                    device=self.policy_net.device, 
+                    dtype=torch.long
+                            )
+
         return action
     
     def learn(self):
-        if self.mem_cntr < self.batch_size:
+        if len(self.memory) < self.batch_size:
             return
         
-        self.Q_eval.optimizer.zero_grad()
-        
-        mem_max = min(self.mem_cntr, self.max_memory_size)
-        batch = np.random.choice(mem_max, self.batch_size, replace=False)
+        transitions = self.memory.sample(self.batch_size)
+      
+        batch = Transition(*zip(*transitions))
 
-        batch_idx = np.arange(self.batch_size, dtype=np.int32   )
+   
+        non_final_mask = torch.tensor(tuple(map(lambda s: s is not None,
+                                            batch.next_state)), 
+                                            device=self.policy_net.device, 
+                                            dtype=torch.bool
+                                    )
+        non_final_next_states = torch.cat([s for s in batch.next_state
+                                                    if s is not None])
+        state_batch = torch.cat(batch.state)
+        action_batch = torch.cat(batch.action)
+        reward_batch = torch.cat(batch.reward)
 
-        batch_state = torch.tensor(self.memory_state[batch]).to(self.Q_eval.device)
-        batch_new_state = torch.tensor(self.new_memory_state[batch]).to(self.Q_eval.device)
-        batch_reward = torch.tensor(self.memory_reward[batch]).to(self.Q_eval.device)
-        batch_terminal = torch.tensor(self.memory_terminal[batch]).to(self.Q_eval.device)
+        state_action_values = self.policy_net(state_batch).gather(1, action_batch)
 
-        batch_action = self.memory_action[batch]
+        next_state_values = torch.zeros(self.batch_size, device=self.policy_net.device)
+        with torch.no_grad():
+            next_state_values[non_final_mask] = self.target_net(non_final_next_states).max(1)[0]
+        expected_state_action_values = (next_state_values * self.gamma) + reward_batch
 
-        q_eval = self.Q_eval.forward(batch_state)[batch_idx, batch_action]
-        q_next = self.Q_eval.forward(batch_new_state)
-        q_next[batch_terminal] = 0.0
+        criterion = torch.nn.SmoothL1Loss()
+        loss = criterion(state_action_values, expected_state_action_values.unsqueeze(1))
 
-        q_target = batch_reward + self.gamma * torch.max(q_next, dim=1)[0]
-
-        loss = self.Q_eval.loss_fn(q_target, q_eval).to(self.Q_eval.device)
-        loss.backward()
-        self.Q_eval.optimizer.step()
-
-        self.epsilon =  self.epsilon - self.eps_decay if self.epsilon > self.eps_end \
-                                       else self.eps_end
-        
         if loss < self.last_loss:
             self.last_loss = loss
-            torch.save(q_eval, "deep-q.pth")
+            self.save_model()
+
+        self.optimizer.zero_grad()
+        loss.backward()
+        torch.nn.utils.clip_grad_value_(self.policy_net.parameters(), 100)
+        self.optimizer.step()
+
+        
+       
 
         
 
