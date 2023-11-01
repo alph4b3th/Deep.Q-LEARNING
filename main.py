@@ -11,7 +11,7 @@ def trigger_episode(episode_id):
 if __name__ == "__main__":
     env = gym.make("LunarLander-v2",
                     render_mode="rgb_array",
-                    max_episode_steps=500,
+                    # max_episode_steps=500,
                     gravity = -11,
                     wind_power= 20.0,
                     turbulence_power = 2.0,
@@ -69,10 +69,6 @@ if __name__ == "__main__":
                 
                 agent.target_net.load_state_dict(agent.target_net_state_dict)
 
-            
-            
-            
-        
         scores.append(score)
         eps_history.append(agent.epsilon)
         avg_scores = np.mean(scores[-100:])
