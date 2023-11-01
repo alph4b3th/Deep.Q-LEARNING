@@ -19,7 +19,7 @@ if __name__ == "__main__":
     
     state, _ = env.reset()
     n_observations = len(state)
-    agent = Agent(observations=n_observations, n_actions=env.action_space.n)
+    agent = Agent(observations=n_observations, n_actions=env.action_space.n, MEMORY_SIZE=100_000)
     
     env = RecordVideo(env=env, 
                       episode_trigger=trigger_episode, 
