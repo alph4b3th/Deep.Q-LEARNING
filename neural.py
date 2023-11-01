@@ -14,8 +14,6 @@ class DeepQNetwork(torch.nn.Module):
              self.activation,
              torch.nn.Linear(128, n_actions)
         )
-
-            
             
         self.device = torch.device("cuda" if torch.cuda.is_available() else 'cpu') 
         self.to(self.device)

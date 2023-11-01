@@ -12,9 +12,9 @@ if __name__ == "__main__":
     env = gym.make("LunarLander-v2",
                     render_mode="rgb_array",
                     # max_episode_steps=500,
-                    gravity = -11,
-                    wind_power= 20.0,
-                    turbulence_power = 2.0,
+                    # gravity = -11,
+                    # wind_power= 20.0,
+                    # turbulence_power = 2.0,
                   )
     
     state, _ = env.reset()
