@@ -8,7 +8,6 @@ class DeepQNetwork(torch.nn.Module):
 
         self.activation = torch.nn.ReLU()
         self.network = torch.nn.Sequential(
-             self.activation,
              torch.nn.Linear(self.observations, 128),
              self.activation,
              torch.nn.Linear(128, 128),
