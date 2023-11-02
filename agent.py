@@ -54,24 +54,6 @@ class Agent():
         torch.save(self.policy_net, "policy.pth")
         torch.save(self.target_net, "target.pth")
          
-
-    def store_transaction(
-            self,
-            state,
-            action,
-            reward,
-            state_,
-            done
-    ):
-        index = self.mem_cntr %  self.max_memory_size   
-        self.memory_state[index] = state
-        self.new_memory_state[index] = state_
-        self.memory_reward[index] = reward
-        self.memory_action[index] = action
-        self.memory_terminal[index] = done
-
-        self.mem_cntr+=1
-
     def decay_eps(self):
         self.epsilon = self.eps_end + (self.eps_start -\
                                    self.eps_end)  *\
